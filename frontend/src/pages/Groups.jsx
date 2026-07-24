@@ -15,14 +15,14 @@ function Groups({ user }) {
   });
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/groups")
+    fetch(`${import.meta.env.VITE_API_URL}/api/groups`)
       .then((res) => res.json())
       .then((data) => {
         setGroups(data);
         setLoading(false);
       });
 
-    fetch("http://localhost:3001/api/treks")
+    fetch(`${import.meta.env.VITE_API_URL}/api/treks`)
       .then((res) => res.json())
       .then((data) => setTreks(data));
   }, []);
@@ -37,7 +37,7 @@ function Groups({ user }) {
       return;
     }
 
-    const res = await fetch("http://localhost:3001/api/groups", {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/groups`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

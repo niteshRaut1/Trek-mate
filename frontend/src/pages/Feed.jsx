@@ -23,19 +23,19 @@ function Feed({ user }) {
   }, []);
 
   const fetchPosts = async () => {
-    const res = await fetch("http://localhost:3001/api/feed");
+    const res = await fetch("http://${import.meta.env.VITE_API_URL}/api/feed");
     const data = await res.json();
     setPosts(data);
     setLoading(false);
 
     if (user) {
       data.forEach(async (post) => {
-        const likeRes = await fetch(`http://localhost:3001/api/feed/${post.id}/liked/${user.id}`);
+        const likeRes = await fetch(`http://${import.meta.env.VITE_API_URL}/api/feed/${post.id}/liked/${user.id}`);
         const likeResult = await likeRes.json();
         setLikedPosts((prev) => ({ ...prev, [post.id]: likeResult.liked }));
 
         if (post.user_id !== user.id) {
-          const followRes = await fetch(`http://localhost:3001/api/follow/${user.id}/${post.user_id}`);
+          const followRes = await fetch(`http://${import.meta.env.VITE_API_URL}/api/follow/${user.id}/${post.user_id}`);
           const followResult = await followRes.json();
           setFollowing((prev) => ({ ...prev, [post.user_id]: followResult.following }));
         }
@@ -73,7 +73,7 @@ function Feed({ user }) {
 
     const isVideo = file.type.startsWith("video/");
 
-    const res = await fetch("http://localhost:3001/api/feed", {
+    const res = await fetch("http://${import.meta.env.VITE_API_URL}/api/feed", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -98,7 +98,7 @@ function Feed({ user }) {
 
   const handleLike = async (postId) => {
     if (!user) { navigate("/login"); return; }
-    const res = await fetch(`http://localhost:3001/api/feed/${postId}/like`, {
+    const res = await fetch(`http://${import.meta.env.VITE_API_URL}/api/feed/${postId}/like`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ user_id: user.id })
@@ -114,7 +114,7 @@ function Feed({ user }) {
 
   const handleDeletePost = async (postId) => {
     if (!window.confirm("Delete this post?")) return;
-    const res = await fetch(`http://localhost:3001/api/feed/${postId}`, {
+    const res = await fetch(`http://${import.meta.env.VITE_API_URL}/api/feed/${postId}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ user_id: user.id })
@@ -125,7 +125,7 @@ function Feed({ user }) {
   };
 
   const handleDeleteComment = async (postId, commentId) => {
-    const res = await fetch(`http://localhost:3001/api/feed/${postId}/comments/${commentId}`, {
+    const res = await fetch(`http://${import.meta.env.VITE_API_URL}/api/feed/${postId}/comments/${commentId}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ user_id: user.id })
@@ -143,14 +143,14 @@ function Feed({ user }) {
     const isFollowing = following[targetUserId];
 
     if (isFollowing) {
-      await fetch("http://localhost:3001/api/follow", {
+      await fetch("http://${import.meta.env.VITE_API_URL}/api/follow", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ follower_id: user.id, following_id: targetUserId })
       });
       setFollowing((prev) => ({ ...prev, [targetUserId]: false }));
     } else {
-      await fetch("http://localhost:3001/api/follow", {
+      await fetch("http://${import.meta.env.VITE_API_URL}/api/follow", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ follower_id: user.id, following_id: targetUserId })
@@ -160,7 +160,7 @@ function Feed({ user }) {
   };
 
   const fetchComments = async (postId) => {
-    const res = await fetch(`http://localhost:3001/api/feed/${postId}/comments`);
+    const res = await fetch(`http://${import.meta.env.VITE_API_URL}/api/feed/${postId}/comments`);
     const data = await res.json();
     setComments((prev) => ({ ...prev, [postId]: data }));
   };
@@ -175,7 +175,7 @@ function Feed({ user }) {
     const content = commentInputs[postId];
     if (!content?.trim()) return;
 
-    const res = await fetch(`http://localhost:3001/api/feed/${postId}/comments`, {
+    const res = await fetch(`http://${import.meta.env.VITE_API_URL}/api/feed/${postId}/comments`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

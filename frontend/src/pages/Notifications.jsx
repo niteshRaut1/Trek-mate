@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Notifications({ user }) {
@@ -8,18 +8,19 @@ function Notifications({ user }) {
 
   useEffect(() => {
     if (!user) return;
+
+    const fetchNotifications = async () => {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/notifications/${user.id}`);
+      const data = await res.json();
+      setNotifications(data);
+      setLoading(false);
+    };
+
     fetchNotifications();
   }, [user]);
 
-  const fetchNotifications = async () => {
-    const res = await fetch(`http://localhost:3001/api/notifications/${user.id}`);
-    const data = await res.json();
-    setNotifications(data);
-    setLoading(false);
-  };
-
   const markAsRead = async (id) => {
-    await fetch(`http://localhost:3001/api/notifications/${id}/read`, {
+    await fetch(`${import.meta.env.VITE_API_URL}/api/notifications/${id}/read`, {
       method: "POST"
     });
     setNotifications(notifications.map((n) =>
@@ -28,7 +29,7 @@ function Notifications({ user }) {
   };
 
   const markAllAsRead = async () => {
-    await fetch(`http://localhost:3001/api/notifications/read-all/${user.id}`, {
+    await fetch(`${import.meta.env.VITE_API_URL}/api/notifications/read-all/${user.id}`, {
       method: "POST"
     });
     setNotifications(notifications.map((n) => ({ ...n, is_read: true })));

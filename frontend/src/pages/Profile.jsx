@@ -19,7 +19,7 @@ function Profile({ user }) {
 
   useEffect(() => {
     if (!user) return;
-    fetch(`http://localhost:3001/api/profiles/${user.id}`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/profiles/${user.id}`)
       .then((res) => res.json())
       .then((data) => {
         if (data && !data.error) {
@@ -35,7 +35,7 @@ function Profile({ user }) {
       })
       .catch(() => setLoading(false));
 
-    fetch(`http://localhost:3001/api/followers/${user.id}`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/followers/${user.id}`)
       .then((res) => res.json())
       .then((data) => {
         setFollowers(data.followers);
@@ -61,7 +61,7 @@ function Profile({ user }) {
   const handleSave = async () => {
     setSaving(true);
     setSuccess(false);
-    const res = await fetch("http://localhost:3001/api/profiles", {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/profiles`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: user.id, ...form, treks_completed: parseInt(form.treks_completed) })
@@ -82,7 +82,6 @@ function Profile({ user }) {
           borderRadius: "20px", padding: "40px",
           textAlign: "center", color: "white", marginBottom: "24px"
         }}>
-          {/* Avatar */}
           <div style={{
             width: "90px", height: "90px", borderRadius: "50%",
             background: "rgba(255,255,255,0.2)",
@@ -110,7 +109,6 @@ function Profile({ user }) {
             </p>
           )}
 
-          {/* Stats Bar */}
           <div style={{
             display: "flex", justifyContent: "center", gap: "0",
             marginTop: "24px", paddingTop: "24px",
@@ -132,7 +130,6 @@ function Profile({ user }) {
             ))}
           </div>
 
-          {/* Experience Badge */}
           <div style={{
             display: "inline-block", marginTop: "16px",
             background: "rgba(255,255,255,0.15)",

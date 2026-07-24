@@ -16,14 +16,14 @@ function TrekDetail({ user }) {
   const [weatherLoading, setWeatherLoading] = useState(false);
 
   useEffect(() => {
-    fetch(`http://localhost:3001/api/treks/${id}`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/treks/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setTrek(data);
         setLoading(false);
         if (data.latitude && data.longitude) {
           setWeatherLoading(true);
-          fetch(`http://localhost:3001/api/weather/${data.latitude}/${data.longitude}`)
+         fetch(`${import.meta.env.VITE_API_URL}/api/weather/${data.latitude}/${data.longitude}`)
             .then((res) => res.json())
             .then((w) => {
               setWeather(w);
@@ -32,18 +32,18 @@ function TrekDetail({ user }) {
         }
       });
 
-    fetch(`http://localhost:3001/api/comments/${id}`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/comments/${id}`)
       .then((res) => res.json())
       .then((data) => setComments(data));
 
-    fetch(`http://localhost:3001/api/photos/${id}`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/photos/${id}`)
       .then((res) => res.json())
       .then((data) => setPhotos(data));
   }, [id]);
 
   const handleComment = async () => {
     if (!comment.trim()) return;
-    const res = await fetch("http://localhost:3001/api/comments", {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/comments`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -62,7 +62,7 @@ function TrekDetail({ user }) {
 
   const handlePhoto = async () => {
     if (!photoUrl.trim()) return;
-    const res = await fetch("http://localhost:3001/api/photos", {
+const res = await fetch(`${import.meta.env.VITE_API_URL}/api/photos`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -82,7 +82,7 @@ function TrekDetail({ user }) {
   };
 
   const handleLike = async (photoId) => {
-    const res = await fetch(`http://localhost:3001/api/photos/${photoId}/like`, {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/photos/${photoId}/like`, {
       method: "POST"
     });
     if (res.ok) {

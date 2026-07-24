@@ -29,9 +29,15 @@ function Health({ user }) {
   });
   const [sosActive, setSosActive] = useState(false);
 
+  const fetchCheckins = () => {
+    fetch(`${import.meta.env.VITE_API_URL}/api/health-checkins/${user.id}`)
+      .then((res) => res.json())
+      .then((data) => setCheckins(data));
+  };
+
   useEffect(() => {
     if (!user) return;
-    fetch(`http://localhost:3001/api/health-profile/${user.id}`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/health-profile/${user.id}`)
       .then((res) => res.json())
       .then((data) => {
         if (data) {
@@ -46,13 +52,7 @@ function Health({ user }) {
         }
       });
     fetchCheckins();
-  }, [user]);
-
-  const fetchCheckins = () => {
-    fetch(`http://localhost:3001/api/health-checkins/${user.id}`)
-      .then((res) => res.json())
-      .then((data) => setCheckins(data));
-  };
+  }, [user, fetchCheckins]);
 
   if (!user) {
     return (
@@ -70,7 +70,7 @@ function Health({ user }) {
   const saveProfile = async () => {
     setSaving(true);
     setSaved(false);
-    const res = await fetch("http://localhost:3001/api/health-profile", {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/health-profile`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ user_id: user.id, ...profile })
@@ -89,7 +89,7 @@ function Health({ user }) {
   };
 
   const submitCheckin = async (status = "ok") => {
-    const res = await fetch("http://localhost:3001/api/health-checkins", {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/health-checkins`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -132,7 +132,6 @@ function Health({ user }) {
           Track your fitness, log symptoms, and stay safe on the trail
         </p>
 
-        {/* Tabs */}
         <div style={{ display: "flex", gap: "8px", marginBottom: "24px", background: "white", padding: "6px", borderRadius: "14px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
           {[
             { id: "profile", label: "📋 Health Profile" },
@@ -157,7 +156,6 @@ function Health({ user }) {
           ))}
         </div>
 
-        {/* SOS Button - always visible */}
         <div style={{
           background: sosActive ? "#ef4444" : "linear-gradient(135deg, #dc2626, #ef4444)",
           borderRadius: "16px",
@@ -188,7 +186,6 @@ function Health({ user }) {
           )}
         </div>
 
-        {/* Profile Tab */}
         {tab === "profile" && (
           <div style={{ background: "white", borderRadius: "20px", padding: "32px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
             {saved && <p style={{ color: "#2d6a4f", fontWeight: "600", marginBottom: "16px" }}>✅ Health profile saved!</p>}
@@ -256,7 +253,6 @@ function Health({ user }) {
           </div>
         )}
 
-        {/* Check-in Tab */}
         {tab === "checkin" && (
           <div style={{ background: "white", borderRadius: "20px", padding: "32px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
             <h3 style={{ marginBottom: "20px", fontSize: "18px" }}>How are you feeling today?</h3>
@@ -326,7 +322,6 @@ function Health({ user }) {
           </div>
         )}
 
-        {/* History Tab */}
         {tab === "history" && (
           <div>
             {checkins.length === 0 ? (

@@ -18,7 +18,7 @@ function Map() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/treks")
+    fetch(`${import.meta.env.VITE_API_URL}/api/treks`)
       .then((res) => res.json())
       .then((data) => {
         const withCoords = data.filter((t) => t.latitude && t.longitude);

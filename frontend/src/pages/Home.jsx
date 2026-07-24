@@ -25,9 +25,8 @@ function FAQItem({ question, answer }) {
   );
 }
 
-function Home({ user }) {
+function Home() {
   const [treks, setTreks] = useState([]);
-  const [filtered, setFiltered] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [difficulty, setDifficulty] = useState("All");
@@ -35,20 +34,19 @@ function Home({ user }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/treks")
+    fetch(`${import.meta.env.VITE_API_URL}/api/treks`)
       .then((res) => res.json())
-      .then((data) => { setTreks(data); setFiltered(data); setLoading(false); });
+      .then((data) => { setTreks(data); setLoading(false); });
   }, []);
 
-  useEffect(() => {
-    let results = treks;
-    if (search) results = results.filter((t) =>
+  const filtered = treks.filter((t) => {
+    if (search && !(
       t.name.toLowerCase().includes(search.toLowerCase()) ||
       t.location.toLowerCase().includes(search.toLowerCase())
-    );
-    if (difficulty !== "All") results = results.filter((t) => t.difficulty === difficulty);
-    setFiltered(results);
-  }, [search, difficulty, treks]);
+    )) return false;
+    if (difficulty !== "All" && t.difficulty !== difficulty) return false;
+    return true;
+  });
 
   const difficultyColor = (d) => {
     switch (d) {
