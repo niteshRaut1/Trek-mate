@@ -23,19 +23,19 @@ function Feed({ user }) {
   }, []);
 
   const fetchPosts = async () => {
-    const res = await fetch("http://${import.meta.env.VITE_API_URL}/api/feed");
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/feed`);
     const data = await res.json();
     setPosts(data);
     setLoading(false);
 
     if (user) {
       data.forEach(async (post) => {
-        const likeRes = await fetch(`http://${import.meta.env.VITE_API_URL}/api/feed/${post.id}/liked/${user.id}`);
+        const likeRes = await fetch(`${import.meta.env.VITE_API_URL}/api/feed/${post.id}/liked/${user.id}`);
         const likeResult = await likeRes.json();
         setLikedPosts((prev) => ({ ...prev, [post.id]: likeResult.liked }));
 
         if (post.user_id !== user.id) {
-          const followRes = await fetch(`http://${import.meta.env.VITE_API_URL}/api/follow/${user.id}/${post.user_id}`);
+          const followRes = await fetch(`${import.meta.env.VITE_API_URL}/api/follow/${user.id}/${post.user_id}`);
           const followResult = await followRes.json();
           setFollowing((prev) => ({ ...prev, [post.user_id]: followResult.following }));
         }
@@ -73,7 +73,7 @@ function Feed({ user }) {
 
     const isVideo = file.type.startsWith("video/");
 
-    const res = await fetch("http://${import.meta.env.VITE_API_URL}/api/feed", {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/feed`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -98,7 +98,7 @@ function Feed({ user }) {
 
   const handleLike = async (postId) => {
     if (!user) { navigate("/login"); return; }
-    const res = await fetch(`http://${import.meta.env.VITE_API_URL}/api/feed/${postId}/like`, {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/feed/${postId}/like`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ user_id: user.id })
@@ -114,7 +114,7 @@ function Feed({ user }) {
 
   const handleDeletePost = async (postId) => {
     if (!window.confirm("Delete this post?")) return;
-    const res = await fetch(`http://${import.meta.env.VITE_API_URL}/api/feed/${postId}`, {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/feed/${postId}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ user_id: user.id })
@@ -125,7 +125,7 @@ function Feed({ user }) {
   };
 
   const handleDeleteComment = async (postId, commentId) => {
-    const res = await fetch(`http://${import.meta.env.VITE_API_URL}/api/feed/${postId}/comments/${commentId}`, {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/feed/${postId}/comments/${commentId}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ user_id: user.id })
@@ -143,14 +143,14 @@ function Feed({ user }) {
     const isFollowing = following[targetUserId];
 
     if (isFollowing) {
-      await fetch("http://${import.meta.env.VITE_API_URL}/api/follow", {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/follow`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ follower_id: user.id, following_id: targetUserId })
       });
       setFollowing((prev) => ({ ...prev, [targetUserId]: false }));
     } else {
-      await fetch("http://${import.meta.env.VITE_API_URL}/api/follow", {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/follow`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ follower_id: user.id, following_id: targetUserId })
@@ -160,7 +160,7 @@ function Feed({ user }) {
   };
 
   const fetchComments = async (postId) => {
-    const res = await fetch(`http://${import.meta.env.VITE_API_URL}/api/feed/${postId}/comments`);
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/feed/${postId}/comments`);
     const data = await res.json();
     setComments((prev) => ({ ...prev, [postId]: data }));
   };
@@ -175,7 +175,7 @@ function Feed({ user }) {
     const content = commentInputs[postId];
     if (!content?.trim()) return;
 
-    const res = await fetch(`http://${import.meta.env.VITE_API_URL}/api/feed/${postId}/comments`, {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/feed/${postId}/comments`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -203,7 +203,6 @@ function Feed({ user }) {
           🏔️ Trek Feed
         </h2>
 
-        {/* Upload Section */}
         {user ? (
           <div style={{ background: "white", borderRadius: "20px", padding: "24px", marginBottom: "32px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
@@ -275,7 +274,6 @@ function Feed({ user }) {
           </div>
         )}
 
-        {/* Posts Feed */}
         {loading ? (
           <div style={{ textAlign: "center", padding: "60px" }}>
             <p style={{ color: "#6e6e73" }}>Loading feed...</p>
@@ -291,7 +289,6 @@ function Feed({ user }) {
             {posts.map((post) => (
               <div key={post.id} style={{ background: "white", borderRadius: "20px", overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
 
-                {/* Post Header */}
                 <div style={{ padding: "16px 20px", display: "flex", alignItems: "center", gap: "12px" }}>
                   <div style={{
                     width: "40px", height: "40px", borderRadius: "50%",
@@ -308,7 +305,6 @@ function Feed({ user }) {
                     </p>
                   </div>
 
-                  {/* Follow button */}
                   {user && post.user_id !== user.id && (
                     <button
                       onClick={() => handleFollow(post.user_id)}
@@ -323,7 +319,6 @@ function Feed({ user }) {
                     </button>
                   )}
 
-                  {/* Delete menu for own posts */}
                   {user && post.user_id === user.id && (
                     <div style={{ position: "relative" }}>
                       <button
@@ -350,14 +345,12 @@ function Feed({ user }) {
                   )}
                 </div>
 
-                {/* Media */}
                 {post.media_type === "video" ? (
                   <video src={post.media_url} controls style={{ width: "100%", maxHeight: "500px", background: "#000" }} />
                 ) : (
                   <img src={post.media_url} alt={post.caption} style={{ width: "100%", maxHeight: "500px", objectFit: "cover" }} />
                 )}
 
-                {/* Post Footer */}
                 <div style={{ padding: "16px 20px" }}>
                   {post.caption && (
                     <p style={{ margin: "0 0 12px", fontSize: "15px", lineHeight: "1.5" }}>
@@ -365,7 +358,6 @@ function Feed({ user }) {
                     </p>
                   )}
 
-                  {/* Actions */}
                   <div style={{ display: "flex", gap: "16px", alignItems: "center", marginBottom: "12px" }}>
                     <button
                       onClick={() => handleLike(post.id)}
@@ -385,7 +377,6 @@ function Feed({ user }) {
                     </button>
                   </div>
 
-                  {/* Comments Section */}
                   {showComments[post.id] && (
                     <div style={{ borderTop: "1px solid #f5f5f7", paddingTop: "12px" }}>
                       <div style={{ marginBottom: "12px", maxHeight: "200px", overflowY: "auto" }}>

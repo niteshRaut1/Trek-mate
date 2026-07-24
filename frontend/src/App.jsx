@@ -29,7 +29,7 @@ function Navbar({ user }) {
 
   useEffect(() => {
     if (!user) return;
-    fetch(`http://${import.meta.env.VITE_API_URL}/api/notifications/${user.id}`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/notifications/${user.id}`)
       .then((res) => res.json())
       .then((data) => setUnreadCount(data.filter((n) => !n.is_read).length));
   }, [user]);

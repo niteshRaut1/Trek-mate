@@ -49,7 +49,7 @@ function AddTrek({ user }) {
     setLoading(true);
     setError("");
 
-    const res = await fetch("http://${import.meta.env.VITE_API_URL}/api/treks", {
+    const res = await fetch("${import.meta.env.VITE_API_URL}/api/treks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
