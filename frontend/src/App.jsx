@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "./supabase";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import Home from "./pages/Home";
 import TrekDetail from "./pages/TrekDetail";
 import Login from "./pages/Login";
@@ -232,6 +233,7 @@ function App() {
           <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
       </div>
+      <SpeedInsights />
     </BrowserRouter>
   );
 }
